@@ -40,10 +40,16 @@ jobs:
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git config --global user.name "github-actions[bot]"
           git add -A
-          git commit -m "chore: initialize project from template" --allow-empty
+          git commit -m "chore: initialize project from template" --allow-empty || true
 
-      - name: Push changes
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Display commit status
         run: |
-          git push "https://github-actions[bot]:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git" HEAD:${{ github.ref_name }} --force
+          Write-Output "===================================="
+          Write-Output "Template Rename Completed!"
+          Write-Output "===================================="
+          Write-Output ""
+          Write-Output "To push changes to your repository, run:"
+          Write-Output "  git push origin main --force"
+          Write-Output ""
+          Write-Output "Or use GitHub Desktop / VS Code to push commits."
+        shell: pwsh
