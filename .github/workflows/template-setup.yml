@@ -1,0 +1,49 @@
+name: Template Setup
+
+on:
+  workflow_dispatch:
+    inputs:
+      repository_name:
+        description: 'Repository name (e.g., product-service)'
+        required: false
+        default: ''
+
+jobs:
+  setup:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Run rename script
+        shell: pwsh
+        run: |
+          $repoName = "${{ github.event.inputs.repository_name }}"
+          if ([string]::IsNullOrEmpty($repoName)) {
+            $repoName = "${{ github.event.repository.name }}"
+          }
+          ./scripts/Rename-Template.ps1 -RepositoryName $repoName
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build solution
+        run: dotnet build --configuration Release --no-restore
+
+      - name: Commit changes
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add -A
+          git commit -m "chore: initialize project from template" --allow-empty
+
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ github.ref }}

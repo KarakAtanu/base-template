@@ -1,0 +1,57 @@
+# EditorConfig helps maintain consistent coding styles
+
+root = true
+
+[*]
+charset = utf-8
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+[*.{cs,csx}]
+indent_size = 4
+indent_style = space
+
+# C# Code Style Rules
+[*.cs]
+# New line preferences
+csharp_new_line_before_open_brace = all
+csharp_new_line_before_else = true
+csharp_new_line_before_catch = true
+csharp_new_line_before_finally = true
+csharp_new_line_before_members_in_object_initializers = true
+csharp_new_line_before_members_in_anonymous_types = true
+csharp_new_line_between_query_expression_clauses = true
+
+# Indentation rules
+csharp_indent_case_contents = true
+csharp_indent_switch_labels = true
+csharp_indent_labels = one_less_than_current
+
+# Naming conventions
+# Public members should be PascalCase
+dotnet_naming_rule.public_members_pascalcase.severity = suggestion
+dotnet_naming_rule.public_members_pascalcase.symbols = public_symbols
+dotnet_naming_rule.public_members_pascalcase.style = pascalcase_style
+
+dotnet_naming_symbols.public_symbols.applicable_kinds = property,method,field,event
+dotnet_naming_symbols.public_symbols.applicable_accessibilities = public
+dotnet_naming_symbols.public_symbols.required_modifiers =
+
+dotnet_naming_style.pascalcase_style.required_prefix =
+dotnet_naming_style.pascalcase_style.required_suffix =
+dotnet_naming_style.pascalcase_style.word_separator =
+dotnet_naming_style.pascalcase_style.capitalization = pascal_case
+
+# Private members should be _camelCase
+dotnet_naming_rule.private_members_camelcase.severity = suggestion
+dotnet_naming_rule.private_members_camelcase.symbols = private_symbols
+dotnet_naming_rule.private_members_camelcase.style = camelcase_style
+
+dotnet_naming_symbols.private_symbols.applicable_kinds = property,method,field,event
+dotnet_naming_symbols.private_symbols.applicable_accessibilities = private,protected
+dotnet_naming_symbols.private_symbols.required_modifiers =
+
+dotnet_naming_style.camelcase_style.required_prefix = _
+dotnet_naming_style.camelcase_style.required_suffix =
+dotnet_naming_style.camelcase_style.word_separator =
+dotnet_naming_style.camelcase_style.capitalization = camel_case
