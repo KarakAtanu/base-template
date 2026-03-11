@@ -43,11 +43,11 @@ Write-Output "Project Name: $projectName"
 $folders = @("Domain", "Application", "Infrastructure", "API", "Tests")
 foreach ($folder in $folders) {
     $oldFolderPath = ".\BaseTemplate.$folder"
-    $newFolderPath = ".\$projectName.$folder"
+    $newFolderName = "$projectName.$folder"
     
     if (Test-Path $oldFolderPath) {
-        Rename-Item -Path $oldFolderPath -NewName "$projectName.$folder" -Force
-        Write-Output "Renamed folder: BaseTemplate.$folder → $projectName.$folder"
+        Rename-Item -Path $oldFolderPath -NewName $newFolderName -Force
+        Write-Output "Renamed folder: BaseTemplate.$folder → $newFolderName"
     }
 }
 
@@ -81,6 +81,7 @@ $slnPath = ".\$newSlnFileName"
 $slnContent = Get-Content $slnPath -Raw
 $slnContent = $slnContent -replace "BaseTemplate", $projectName
 Set-Content -Path $slnPath -Value $slnContent
+Write-Output "Updated: $slnPath"
 
 # Update project references in .csproj files
 Write-Output "Updating project file references..."
@@ -96,7 +97,13 @@ Write-Output "Building solution to verify..."
 
 try {
     & dotnet build $newSlnFileName -c Release
-    Write-Output "Build successful!"
+    if ($LASTEXITCODE -eq 0) {
+        Write-Output "Build successful!"
+    }
+    else {
+        Write-Error "Build failed with exit code $LASTEXITCODE"
+        exit 1
+    }
 }
 catch {
     Write-Error "Build failed: $_"
