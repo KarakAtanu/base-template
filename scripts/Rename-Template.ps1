@@ -46,7 +46,7 @@ foreach ($folder in $folders) {
     $newFolderPath = ".\$projectName.$folder"
     
     if (Test-Path $oldFolderPath) {
-        Rename-Item -Path $oldFolderPath -NewName $newFolderPath -Force
+        Rename-Item -Path $oldFolderPath -NewName "$projectName.$folder" -Force
         Write-Output "Renamed folder: BaseTemplate.$folder → $projectName.$folder"
     }
 }
@@ -55,20 +55,20 @@ foreach ($folder in $folders) {
 foreach ($folder in $folders) {
     $newFolderPath = ".\$projectName.$folder"
     $oldCsprojPath = "$newFolderPath\BaseTemplate.$folder.csproj"
-    $newCsprojPath = "$newFolderPath\$projectName.$folder.csproj"
+    $newCsprojFileName = "$projectName.$folder.csproj"
     
     if (Test-Path $oldCsprojPath) {
-        Rename-Item -Path $oldCsprojPath -NewName $newCsprojPath -Force
-        Write-Output "Renamed .csproj: BaseTemplate.$folder.csproj → $projectName.$folder.csproj"
+        Rename-Item -Path $oldCsprojPath -NewName $newCsprojFileName -Force
+        Write-Output "Renamed .csproj: BaseTemplate.$folder.csproj → $newCsprojFileName"
     }
 }
 
 # Rename solution file
 $oldSlnPath = ".\BaseTemplate.sln"
-$newSlnPath = ".\$projectName.sln"
+$newSlnFileName = "$projectName.sln"
 if (Test-Path $oldSlnPath) {
-    Rename-Item -Path $oldSlnPath -NewName $newSlnPath -Force
-    Write-Output "Renamed solution: BaseTemplate.sln → $projectName.sln"
+    Rename-Item -Path $oldSlnPath -NewName $newSlnFileName -Force
+    Write-Output "Renamed solution: BaseTemplate.sln → $newSlnFileName"
 }
 
 # Replace namespace in all .cs files
@@ -77,9 +77,10 @@ Find-And-Replace-Recursive -rootPath "." -oldText "BaseTemplate" -newText $proje
 
 # Update project references in .sln file
 Write-Output "Updating solution file references..."
-$slnContent = Get-Content $newSlnPath -Raw
+$slnPath = ".\$newSlnFileName"
+$slnContent = Get-Content $slnPath -Raw
 $slnContent = $slnContent -replace "BaseTemplate", $projectName
-Set-Content -Path $newSlnPath -Value $slnContent
+Set-Content -Path $slnPath -Value $slnContent
 
 # Update project references in .csproj files
 Write-Output "Updating project file references..."
@@ -94,7 +95,7 @@ Write-Output "Template rename completed successfully!"
 Write-Output "Building solution to verify..."
 
 try {
-    & dotnet build "$projectName.sln" -c Release
+    & dotnet build $newSlnFileName -c Release
     Write-Output "Build successful!"
 }
 catch {
